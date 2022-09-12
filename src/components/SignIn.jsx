@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
+import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as yup from "yup";
 import Text from "./Text";
@@ -74,6 +75,7 @@ const SignIn = () => {
   const [signIn, result] = useSignIn();
   const [data, setData] = useState(null);
   const [token, setToken] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (result.data) {
@@ -87,7 +89,9 @@ const SignIn = () => {
 
     try {
       await signIn({ username, password });
-      console.log(data);
+
+      // console.log(data);
+      navigate("/", { replace: true });
     } catch (e) {
       console.log(e);
     }
