@@ -60,7 +60,7 @@ const StatsItem = ({ typeOfCount, count }) => {
 
 const RepositoryItem = ({ item }) => {
   return (
-    <View style={styles.itemContainer}>
+    <View testID="repositoryItem" style={styles.itemContainer}>
       <View style={{ flexDirection: "row" }}>
         <Image
           style={styles.avatar}
