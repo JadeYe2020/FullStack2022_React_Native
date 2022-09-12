@@ -49,6 +49,7 @@ const SignInForm = ({ onSubmit }) => {
         secureTextEntry
       />
       <Pressable
+        testID="signIn"
         onPress={onSubmit}
         style={[styles.inputBox, styles.signInButton]}
       >
@@ -70,6 +71,18 @@ const validationSchema = yup.object().shape({
   password: yup.string().required("Password is required"),
 });
 
+export const SignInContainer = ({ onSubmit }) => {
+  return (
+    <Formik
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}
+    >
+      {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} />}
+    </Formik>
+  );
+};
+
 const SignIn = () => {
   const [signIn] = useSignIn();
   const navigate = useNavigate();
@@ -85,15 +98,7 @@ const SignIn = () => {
     }
   };
 
-  return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-      validationSchema={validationSchema}
-    >
-      {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} />}
-    </Formik>
-  );
+  return <SignInContainer onSubmit={onSubmit} />;
 };
 
 export default SignIn;
