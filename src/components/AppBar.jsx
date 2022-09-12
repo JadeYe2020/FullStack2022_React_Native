@@ -1,7 +1,12 @@
+import { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable, ScrollView } from "react-native";
-import { Link } from "react-router-native";
+import { Link, useNavigate } from "react-router-native";
 import Text from "./Text";
 import Constants from "expo-constants";
+import { useQuery } from "@apollo/client";
+import useAuthStorage from "../hooks/useAuthStorage";
+import { useApolloClient } from "@apollo/client";
+import { CURRENT_USER } from "../graphql/queries";
 
 const styles = StyleSheet.create({
   container: {
@@ -17,9 +22,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const Tab = ({ title, linkPath }) => {
+const Tab = ({ title, linkPath, onPress }) => {
   return (
-    <Pressable style={styles.flexItem}>
+    <Pressable style={styles.flexItem} onPress={onPress}>
       <Link to={linkPath}>
         <Text
           fontWeight="bold"
@@ -34,11 +39,45 @@ const Tab = ({ title, linkPath }) => {
 };
 
 const AppBar = () => {
+  const [user, setUser] = useState(null);
+  const authStorage = useAuthStorage();
+  const apolloClient = useApolloClient();
+  const result = useQuery(CURRENT_USER);
+
+  useEffect(() => {
+    let me = null;
+    if (result.data) {
+      me = result.data.me;
+      setUser(me);
+    }
+  }, [result]);
+
+  const navigate = useNavigate();
+
+  const onSignOut = async () => {
+    // console.log("sign out");
+    await authStorage.removeAccessToken();
+    apolloClient.resetStore();
+    navigate("/signin", { replace: true });
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
         <Tab title="Repositories" linkPath="/" />
-        <Tab title="Sign In" linkPath="/signin" />
+        {user ? (
+          <Pressable style={styles.flexItem} onPress={onSignOut}>
+            <Text
+              fontWeight="bold"
+              fontSize="subheading"
+              style={{ color: "white" }}
+            >
+              Sign Out
+            </Text>
+          </Pressable>
+        ) : (
+          <Tab title="Sign In" linkPath="/signin" />
+        )}
       </ScrollView>
     </View>
   );

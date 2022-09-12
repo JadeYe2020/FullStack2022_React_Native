@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-native";
 import { Formik } from "formik";
 import * as yup from "yup";
 import Text from "./Text";
@@ -72,25 +71,14 @@ const validationSchema = yup.object().shape({
 });
 
 const SignIn = () => {
-  const [signIn, result] = useSignIn();
-  const [data, setData] = useState(null);
-  const [token, setToken] = useState("");
+  const [signIn] = useSignIn();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (result.data) {
-      setData(result.data);
-      setToken(result.data.authenticate.accessToken);
-    }
-  }, [result]);
 
   const onSubmit = async (values) => {
     const { username, password } = values;
 
     try {
       await signIn({ username, password });
-
-      // console.log(data);
       navigate("/", { replace: true });
     } catch (e) {
       console.log(e);
