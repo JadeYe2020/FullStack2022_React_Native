@@ -1,4 +1,5 @@
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Pressable } from "react-native";
+import { useNavigate } from "react-router-native";
 import theme from "../theme";
 import Text from "./Text";
 
@@ -59,8 +60,19 @@ const StatsItem = ({ typeOfCount, count }) => {
 };
 
 const RepositoryItem = ({ item }) => {
+  const navigate = useNavigate();
+
+  const openSingleRepo = (id) => {
+    navigate(`/repositories/${id}`, { replace: true });
+    console.log("item.id", id);
+  };
+
   return (
-    <View testID="repositoryItem" style={styles.itemContainer}>
+    <Pressable
+      testID="repositoryItem"
+      onPress={() => openSingleRepo(item.id)}
+      style={styles.itemContainer}
+    >
       <View style={{ flexDirection: "row" }}>
         <Image
           style={styles.avatar}
@@ -89,7 +101,7 @@ const RepositoryItem = ({ item }) => {
         <StatsItem typeOfCount="Reviews" count={item.reviewCount} />
         <StatsItem typeOfCount="Rating" count={item.ratingAverage} />
       </View>
-    </View>
+    </Pressable>
   );
 };
 
