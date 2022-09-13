@@ -1,13 +1,17 @@
-import Text from "./Text";
 import { useParams } from "react-router-native";
 import RepositoryItem from "./RepositoryItem";
+import Text from "./Text";
+import useRepository from "../hooks/useRepository";
 
 const SingleRepo = () => {
   const id = useParams().id;
-  console.log("id", id);
-  return <Text>id:{id}</Text>;
+  const { repoItem } = useRepository(id);
 
-  // return <RepositoryItem item={item} />;
+  if (!repoItem) {
+    return <Text>loading</Text>;
+  }
+
+  return <RepositoryItem item={repoItem} isSingleView={true} />;
 };
 
 export default SingleRepo;

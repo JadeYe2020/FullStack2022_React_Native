@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Pressable } from "react-native";
+import { View, StyleSheet, Image, Pressable, Button } from "react-native";
 import { useNavigate } from "react-router-native";
 import theme from "../theme";
 import Text from "./Text";
@@ -59,18 +59,17 @@ const StatsItem = ({ typeOfCount, count }) => {
   );
 };
 
-const RepositoryItem = ({ item }) => {
+const RepositoryItem = ({ item, isSingleView }) => {
   const navigate = useNavigate();
 
   const openSingleRepo = (id) => {
     navigate(`/repositories/${id}`, { replace: true });
-    console.log("item.id", id);
   };
 
   return (
     <Pressable
       testID="repositoryItem"
-      onPress={() => openSingleRepo(item.id)}
+      onPress={isSingleView ? () => {} : () => openSingleRepo(item.id)}
       style={styles.itemContainer}
     >
       <View style={{ flexDirection: "row" }}>
@@ -101,6 +100,11 @@ const RepositoryItem = ({ item }) => {
         <StatsItem typeOfCount="Reviews" count={item.reviewCount} />
         <StatsItem typeOfCount="Rating" count={item.ratingAverage} />
       </View>
+      {isSingleView && (
+        <View>
+          <Button title="Open in GitHub"></Button>
+        </View>
+      )}
     </Pressable>
   );
 };
