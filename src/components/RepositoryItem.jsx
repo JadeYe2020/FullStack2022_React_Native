@@ -1,5 +1,6 @@
 import { View, StyleSheet, Image, Pressable, Button } from "react-native";
 import { useNavigate } from "react-router-native";
+import * as Linking from "expo-linking";
 import theme from "../theme";
 import Text from "./Text";
 
@@ -66,6 +67,10 @@ const RepositoryItem = ({ item, isSingleView }) => {
     navigate(`/repositories/${id}`, { replace: true });
   };
 
+  const openGitHub = () => {
+    Linking.openURL(item.url);
+  };
+
   return (
     <Pressable
       testID="repositoryItem"
@@ -102,7 +107,7 @@ const RepositoryItem = ({ item, isSingleView }) => {
       </View>
       {isSingleView && (
         <View>
-          <Button title="Open in GitHub"></Button>
+          <Button onPress={openGitHub} title="Open in GitHub"></Button>
         </View>
       )}
     </Pressable>
