@@ -41,6 +41,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 5,
   },
+  separator: {
+    height: 10,
+  },
 });
 
 const StatsItem = ({ typeOfCount, count }) => {
@@ -72,45 +75,48 @@ const RepositoryItem = ({ item, isSingleView }) => {
   };
 
   return (
-    <Pressable
-      testID="repositoryItem"
-      onPress={isSingleView ? () => {} : () => openSingleRepo(item.id)}
-      style={styles.itemContainer}
-    >
-      <View style={{ flexDirection: "row" }}>
-        <Image
-          style={styles.avatar}
-          source={{
-            uri: item.ownerAvatarUrl,
-          }}
-        />
-        <View style={styles.infoContainer}>
-          <Text fontWeight="bold">{item.fullName}</Text>
-          <Text
-            style={{ marginTop: 10, marginBottom: 10 }}
-            color="textSecondary"
-          >
-            {item.description}
-          </Text>
-          <View style={{ alignItems: "baseline" }}>
-            <View style={styles.languageTag}>
-              <Text style={{ color: "white" }}>{item.language}</Text>
+    <View>
+      <Pressable
+        testID="repositoryItem"
+        onPress={isSingleView ? () => {} : () => openSingleRepo(item.id)}
+        style={styles.itemContainer}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <Image
+            style={styles.avatar}
+            source={{
+              uri: item.ownerAvatarUrl,
+            }}
+          />
+          <View style={styles.infoContainer}>
+            <Text fontWeight="bold">{item.fullName}</Text>
+            <Text
+              style={{ marginTop: 10, marginBottom: 10 }}
+              color="textSecondary"
+            >
+              {item.description}
+            </Text>
+            <View style={{ alignItems: "baseline" }}>
+              <View style={styles.languageTag}>
+                <Text style={{ color: "white" }}>{item.language}</Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
-      <View style={styles.statsContainer}>
-        <StatsItem typeOfCount="Stars" count={item.stargazersCount} />
-        <StatsItem typeOfCount="Forks" count={item.forksCount} />
-        <StatsItem typeOfCount="Reviews" count={item.reviewCount} />
-        <StatsItem typeOfCount="Rating" count={item.ratingAverage} />
-      </View>
-      {isSingleView && (
-        <View>
-          <Button onPress={openGitHub} title="Open in GitHub"></Button>
+        <View style={styles.statsContainer}>
+          <StatsItem typeOfCount="Stars" count={item.stargazersCount} />
+          <StatsItem typeOfCount="Forks" count={item.forksCount} />
+          <StatsItem typeOfCount="Reviews" count={item.reviewCount} />
+          <StatsItem typeOfCount="Rating" count={item.ratingAverage} />
         </View>
-      )}
-    </Pressable>
+        {isSingleView && (
+          <View>
+            <Button onPress={openGitHub} title="Open in GitHub"></Button>
+          </View>
+        )}
+      </Pressable>
+      {isSingleView && <View style={styles.separator} />}
+    </View>
   );
 };
 
