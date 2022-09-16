@@ -61,23 +61,31 @@ const AppBar = () => {
     navigate("/signin", { replace: true });
   };
 
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <ScrollView horizontal>
+          <Tab title="Repositories" linkPath="/" />
+          <Tab title="Sign In" linkPath="/signin" />
+        </ScrollView>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
         <Tab title="Repositories" linkPath="/" />
-        {user ? (
-          <Pressable style={styles.flexItem} onPress={onSignOut}>
-            <Text
-              fontWeight="bold"
-              fontSize="subheading"
-              style={{ color: "white" }}
-            >
-              Sign Out
-            </Text>
-          </Pressable>
-        ) : (
-          <Tab title="Sign In" linkPath="/signin" />
-        )}
+        <Tab title="Create a review" linkPath="/review" />
+        <Pressable style={styles.flexItem} onPress={onSignOut}>
+          <Text
+            fontWeight="bold"
+            fontSize="subheading"
+            style={{ color: "white" }}
+          >
+            Sign Out
+          </Text>
+        </Pressable>
       </ScrollView>
     </View>
   );

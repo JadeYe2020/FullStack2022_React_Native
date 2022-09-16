@@ -6,7 +6,7 @@ const useRepository = (id) => {
   const [repoItem, setRepoItem] = useState(null);
   const { data, loading } = useQuery(GET_SINGLE_REPO, {
     variables: { repositoryId: id },
-    // fetchPolicy: "cache-and-network",
+    fetchPolicy: "cache-and-network",
   });
 
   const fetchRepoData = () => {
