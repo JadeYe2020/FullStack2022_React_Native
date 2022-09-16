@@ -5,6 +5,7 @@ import * as yup from "yup";
 import theme from "../theme";
 import Text from "./Text";
 import FormikTextInput from "./FormikTextInput";
+import useAddReview from "../hooks/useAddReview";
 
 const initialValues = {
   owner: "",
@@ -96,18 +97,19 @@ const validationSchema = yup.object().shape({
 });
 
 const ReviewForm = () => {
+  const [createReview] = useAddReview();
   const navigate = useNavigate();
 
-  const onSubmit = () => {
+  const onSubmit = async (values) => {
     navigate("/", { replace: true });
-    // const { username, password } = values;
+    const { owner, repoName, rating, review } = values;
 
-    // try {
-    //   await signIn({ username, password });
-    //   navigate("/", { replace: true });
-    // } catch (e) {
-    //   console.log(e);
-    // }
+    try {
+      await createReview({ owner, repoName, rating: parseInt(rating), review });
+      navigate("/", { replace: true });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
