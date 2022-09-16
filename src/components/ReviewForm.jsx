@@ -1,6 +1,7 @@
 import { View, StyleSheet, Pressable } from "react-native";
 import { useNavigate } from "react-router-native";
 import { Formik } from "formik";
+import * as yup from "yup";
 import theme from "../theme";
 import Text from "./Text";
 import FormikTextInput from "./FormikTextInput";
@@ -32,6 +33,12 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     textAlign: "center",
   },
+  reviewField: {
+    color: theme.colors.textPrimary,
+    fontSize: theme.fontSizes.subheading,
+    padding: 0,
+    margin: 0,
+  },
 });
 
 const FormFields = ({ onSubmit }) => {
@@ -46,20 +53,20 @@ const FormFields = ({ onSubmit }) => {
         style={styles.inputBox}
         name="repoName"
         placeholder="Repository name"
-        secureTextEntry
       />
       <FormikTextInput
         style={styles.inputBox}
         name="rating"
         placeholder="Rating between 0 and 100"
-        secureTextEntry
       />
-      <FormikTextInput
-        style={styles.inputBox}
-        name="review"
-        placeholder="Review"
-        secureTextEntry
-      />
+      <View style={styles.inputBox}>
+        <FormikTextInput
+          style={styles.reviewField}
+          multiline={true}
+          name="review"
+          placeholder="Review"
+        />
+      </View>
       <Pressable
         onPress={onSubmit}
         style={[styles.inputBox, styles.signInButton]}
@@ -76,6 +83,17 @@ const FormFields = ({ onSubmit }) => {
     </View>
   );
 };
+
+const validationSchema = yup.object().shape({
+  owner: yup.string().required("Repository owner name is required"),
+  repoName: yup.string().required("Repository name is required"),
+  rating: yup
+    .number("Rating must be a number")
+    .required("Rating is required")
+    .integer("Rating must be an integer")
+    .max(100, "Rating cannot be higher than 100")
+    .min(0, "Rating cannot be lower than 0"),
+});
 
 const ReviewForm = () => {
   const navigate = useNavigate();
@@ -96,7 +114,7 @@ const ReviewForm = () => {
     <Formik
       initialValues={initialValues}
       onSubmit={onSubmit}
-      // validationSchema={validationSchema}
+      validationSchema={validationSchema}
     >
       {({ handleSubmit }) => <FormFields onSubmit={handleSubmit} />}
     </Formik>
