@@ -6,6 +6,7 @@ import theme from "../theme";
 import Text from "./Text";
 import FormikTextInput from "./FormikTextInput";
 import useAddReview from "../hooks/useAddReview";
+import { useState } from "react";
 
 const initialValues = {
   owner: "",
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     color: theme.colors.textPrimary,
     fontSize: theme.fontSizes.subheading,
   },
-  signInButton: {
+  button: {
     borderColor: theme.colors.primary,
     backgroundColor: theme.colors.primary,
     textAlign: "center",
@@ -39,6 +40,11 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSizes.subheading,
     padding: 0,
     margin: 0,
+  },
+  errorMessage: {
+    color: theme.colors.error,
+    backgroundColor: "white",
+    textAlign: "center",
   },
 });
 
@@ -68,10 +74,7 @@ const FormFields = ({ onSubmit }) => {
           placeholder="Review"
         />
       </View>
-      <Pressable
-        onPress={onSubmit}
-        style={[styles.inputBox, styles.signInButton]}
-      >
+      <Pressable onPress={onSubmit} style={[styles.inputBox, styles.button]}>
         <Text
           color="white"
           fontSize="subheading"
@@ -97,6 +100,7 @@ const validationSchema = yup.object().shape({
 });
 
 const ReviewForm = () => {
+  const [errorMsg, setErrorMsg] = useState("");
   const [createReview] = useAddReview();
   const navigate = useNavigate();
 
@@ -116,17 +120,21 @@ const ReviewForm = () => {
       navigate(`/repositories/${repositoryId}`);
     } catch (e) {
       console.log(e);
+      setErrorMsg(e.message);
     }
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-      validationSchema={validationSchema}
-    >
-      {({ handleSubmit }) => <FormFields onSubmit={handleSubmit} />}
-    </Formik>
+    <View>
+      {errorMsg ? <Text style={styles.errorMessage}>{errorMsg}</Text> : null}
+      <Formik
+        initialValues={initialValues}
+        onSubmit={onSubmit}
+        validationSchema={validationSchema}
+      >
+        {({ handleSubmit }) => <FormFields onSubmit={handleSubmit} />}
+      </Formik>
+    </View>
   );
 };
 

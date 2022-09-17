@@ -5,7 +5,7 @@ import { GET_REVIEWS } from "../graphql/queries";
 const useRepoReviews = (id) => {
   const [reviews, setReviews] = useState(null);
   const { data, loading } = useQuery(GET_REVIEWS, {
-    // fetchPolicy: "cache-and-network",
+    fetchPolicy: "cache-and-network",
     variables: { repositoryId: id },
   });
 
