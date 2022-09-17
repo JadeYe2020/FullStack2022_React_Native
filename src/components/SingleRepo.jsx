@@ -69,7 +69,7 @@ const RenderItem = ({ item }) => {
 const SingleRepoContainer = ({ repo, reviews }) => {
   const reviewNodes = reviews ? reviews.edges.map((edge) => edge.node) : [];
 
-  console.log("reviewNodes", reviewNodes);
+  // console.log("reviewNodes", reviewNodes);
 
   return (
     <View style={styles.flexContainer}>
