@@ -41,38 +41,35 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
+const RenderItem = ({ item }) => {
+  if (!item) {
+    return <Text>loading</Text>;
+  }
+
+  return (
+    <View style={styles.reviewItem}>
+      <View style={styles.rating}>
+        <Text color="primary" fontWeight="bold">
+          {item.rating}
+        </Text>
+      </View>
+      <View style={styles.detailsContainer}>
+        <Text fontSize="subheading" fontWeight="bold">
+          {item.user.username}
+        </Text>
+        <Text color="textSecondary" style={{ marginTop: 5, marginBottom: 10 }}>
+          {format(Date.parse(item.createdAt), "dd.MM.yyyy")}
+        </Text>
+        <Text>{item.text}</Text>
+      </View>
+    </View>
+  );
+};
+
 const SingleRepoContainer = ({ repo, reviews }) => {
   const reviewNodes = reviews ? reviews.edges.map((edge) => edge.node) : [];
 
-  // console.log("reviewNodes", reviewNodes);
-
-  const renderItem = ({ item }) => {
-    if (!item) {
-      return <Text>loading</Text>;
-    }
-
-    return (
-      <View style={styles.reviewItem}>
-        <View style={styles.rating}>
-          <Text color="primary" fontWeight="bold">
-            {item.rating}
-          </Text>
-        </View>
-        <View style={styles.detailsContainer}>
-          <Text fontSize="subheading" fontWeight="bold">
-            {item.user.username}
-          </Text>
-          <Text
-            color="textSecondary"
-            style={{ marginTop: 5, marginBottom: 10 }}
-          >
-            {format(Date.parse(item.createdAt), "dd.MM.yyyy")}
-          </Text>
-          <Text>{item.text}</Text>
-        </View>
-      </View>
-    );
-  };
+  console.log("reviewNodes", reviewNodes);
 
   return (
     <View style={styles.flexContainer}>
@@ -82,7 +79,7 @@ const SingleRepoContainer = ({ repo, reviews }) => {
           <RepositoryItem item={repo} isSingleView={true} />
         )}
         ItemSeparatorComponent={ItemSeparator}
-        renderItem={renderItem}
+        renderItem={({ item }) => <RenderItem item={item} />}
       />
     </View>
   );

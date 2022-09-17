@@ -101,12 +101,19 @@ const ReviewForm = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (values) => {
-    navigate("/", { replace: true });
     const { owner, repoName, rating, review } = values;
 
     try {
-      await createReview({ owner, repoName, rating: parseInt(rating), review });
-      navigate("/", { replace: true });
+      const data = await createReview({
+        owner,
+        repoName,
+        rating: parseInt(rating),
+        review,
+      });
+
+      const repositoryId = data.createReview.repositoryId;
+
+      navigate(`/repositories/${repositoryId}`);
     } catch (e) {
       console.log(e);
     }

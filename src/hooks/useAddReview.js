@@ -21,8 +21,10 @@ const useAddReview = () => {
       },
     });
 
-    console.log("data", data);
+    return data;
   };
+
+  // console.log("result", result);
 
   return [createReview, result];
 };

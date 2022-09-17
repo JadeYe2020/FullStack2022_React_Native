@@ -6,11 +6,12 @@ const useRepoReviews = (id) => {
   const [reviews, setReviews] = useState(null);
   const { data, loading } = useQuery(GET_REVIEWS, {
     variables: { repositoryId: id },
-    // fetchPolicy: "cache-and-network",
+    fetchPolicy: "cache-and-network",
   });
 
   useEffect(() => {
     let dataFetched = null;
+
     if (data) {
       dataFetched = data.repository.reviews;
     }
