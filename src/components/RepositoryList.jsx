@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { FlatList, View, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import RepositoryItem from "./RepositoryItem";
@@ -11,43 +11,54 @@ const styles = StyleSheet.create({
   flexContainer: {
     display: "flex",
     flexDirection: "column",
-    marginBottom: 150,
+    marginBottom: 100,
   },
 });
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-export const RepositoryListContainer = ({
-  orderPrinciple,
-  setOrderPrinciple,
-  repositories,
-}) => {
-  const repositoryNodes = repositories
-    ? repositories.edges.map((edge) => edge.node)
-    : [];
-
-  // const [orderPrinciple, setOrderPrinciple] = useState("default");
-
+const RepositoryListHeader = (props) => {
   return (
-    <View style={styles.flexContainer}>
-      <Picker
-        selectedValue={orderPrinciple}
-        onValueChange={(itemValue, itemIndex) => setOrderPrinciple(itemValue)}
-      >
-        <Picker.Item label="Latest repositories" value="default" />
-        <Picker.Item label="Highest rated repositories" value="highestRated" />
-        <Picker.Item label="Lowest rated repositories" value="lowestRated" />
-      </Picker>
-      <FlatList
-        data={repositoryNodes}
-        ItemSeparatorComponent={ItemSeparator}
-        renderItem={({ item }) => (
-          <RepositoryItem item={item} isSingleView={false} />
-        )}
-      />
-    </View>
+    <Picker
+      selectedValue={props.orderPrinciple}
+      onValueChange={(itemValue, itemIndex) =>
+        props.setOrderPrinciple(itemValue)
+      }
+    >
+      <Picker.Item label="Latest repositories" value="default" />
+      <Picker.Item label="Highest rated repositories" value="highestRated" />
+      <Picker.Item label="Lowest rated repositories" value="lowestRated" />
+    </Picker>
   );
 };
+
+export class RepositoryListContainer extends React.Component {
+  renderHeader = () => {
+    // this.props contains the component's props
+    const props = this.props;
+
+    return <RepositoryListHeader {...props} />;
+  };
+
+  render() {
+    const repositoryNodes = this.props.repositories
+      ? this.props.repositories.edges.map((edge) => edge.node)
+      : [];
+
+    return (
+      <View style={styles.flexContainer}>
+        <FlatList
+          data={repositoryNodes}
+          ListHeaderComponent={this.renderHeader}
+          ItemSeparatorComponent={ItemSeparator}
+          renderItem={({ item }) => (
+            <RepositoryItem item={item} isSingleView={false} />
+          )}
+        />
+      </View>
+    );
+  }
+}
 
 const RepositoryList = () => {
   const [orderPrinciple, setOrderPrinciple] = useState("default");
