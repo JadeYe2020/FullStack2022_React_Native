@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   flexContainer: {
     display: "flex",
     flexDirection: "column",
+    marginBottom: 100,
   },
   reviewItem: {
     flexDirection: "row",
