@@ -32,9 +32,7 @@ const RepositoryListHeader = (props) => {
       />
       <Picker
         selectedValue={props.orderPrinciple}
-        onValueChange={(itemValue, itemIndex) =>
-          props.setOrderPrinciple(itemValue)
-        }
+        onValueChange={(itemValue) => props.setOrderPrinciple(itemValue)}
       >
         <Picker.Item label="Latest repositories" value="default" />
         <Picker.Item label="Highest rated repositories" value="highestRated" />
@@ -66,6 +64,8 @@ export class RepositoryListContainer extends React.Component {
           renderItem={({ item }) => (
             <RepositoryItem item={item} isSingleView={false} />
           )}
+          onEndReached={this.props.onEndReach}
+          onEndReachedThreshold={0.5}
         />
       </View>
     );
@@ -101,9 +101,16 @@ const RepositoryList = () => {
     default:
       break;
   }
-  const { repositories } = useRepositories(variables);
+  const { repositories, fetchMore } = useRepositories({
+    ...variables,
+    first: 5,
+  });
 
   const onChangeSearch = (query) => setSearchQuery(query);
+
+  const onEndReach = () => {
+    fetchMore();
+  };
 
   const containerProps = {
     orderPrinciple,
@@ -111,6 +118,7 @@ const RepositoryList = () => {
     repositories,
     onChangeSearch,
     searchQuery,
+    onEndReach,
   };
 
   return <RepositoryListContainer {...containerProps} />;

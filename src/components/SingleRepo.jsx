@@ -67,10 +67,8 @@ const RenderItem = ({ item }) => {
   );
 };
 
-const SingleRepoContainer = ({ repo, reviews }) => {
+const SingleRepoContainer = ({ repo, reviews, onEndReach }) => {
   const reviewNodes = reviews ? reviews.edges.map((edge) => edge.node) : [];
-
-  // console.log("reviewNodes", reviewNodes);
 
   return (
     <View style={styles.flexContainer}>
@@ -81,6 +79,8 @@ const SingleRepoContainer = ({ repo, reviews }) => {
         )}
         ItemSeparatorComponent={ItemSeparator}
         renderItem={({ item }) => <RenderItem item={item} />}
+        onEndReached={onEndReach}
+        onEndReachedThreshold={0.5}
       />
     </View>
   );
@@ -89,13 +89,23 @@ const SingleRepoContainer = ({ repo, reviews }) => {
 const SingleRepo = () => {
   const id = useParams().id;
   const { repoItem } = useRepository(id);
-  const { reviews } = useRepoReviews(id);
+  const { reviews, fetchMore } = useRepoReviews({ repositoryId: id, first: 4 });
 
   if (!repoItem) {
     return <Text>loading</Text>;
   }
 
-  return <SingleRepoContainer repo={repoItem} reviews={reviews} />;
+  const onEndReach = () => {
+    fetchMore();
+  };
+
+  return (
+    <SingleRepoContainer
+      repo={repoItem}
+      reviews={reviews}
+      onEndReach={onEndReach}
+    />
+  );
 };
 
 export default SingleRepo;
