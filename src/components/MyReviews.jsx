@@ -1,4 +1,4 @@
-import { View, FlatList, StyleSheet } from "react-native";
+import { View, FlatList, StyleSheet, Pressable, Alert } from "react-native";
 import { format } from "date-fns";
 import Text from "./Text";
 import theme from "../theme";
@@ -13,10 +13,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginBottom: 100,
   },
-  reviewItem: {
-    flexDirection: "row",
+  itemContainer: {
+    flexDirection: "column",
     padding: 10,
     backgroundColor: "white",
+  },
+  reviewDetails: {
+    flexDirection: "row",
   },
   rating: {
     marginRight: 10,
@@ -35,6 +38,19 @@ const styles = StyleSheet.create({
     marginTop: 0,
     justifyContent: "flex-start",
   },
+  buttonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  regularButton: {
+    width: "45%",
+    borderRadius: 5,
+    marginVertical: 8,
+    padding: 16,
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.colors.primary,
+    textAlign: "center",
+  },
 });
 
 const ItemSeparator = () => <View style={styles.separator} />;
@@ -44,21 +60,59 @@ const ReviewItem = ({ item }) => {
     return <Text>loading</Text>;
   }
 
+  const deleteAlert = () => {
+    Alert.alert(
+      "Delete review",
+      "Are you sure you want to delete this review?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Delete", onPress: () => console.log("OK Pressed") },
+      ]
+    );
+  };
+
   return (
-    <View style={styles.reviewItem}>
-      <View style={styles.rating}>
-        <Text color="primary" fontWeight="bold">
-          {item.rating}
-        </Text>
+    <View style={styles.itemContainer}>
+      <View style={styles.reviewDetails}>
+        <View style={styles.rating}>
+          <Text color="primary" fontWeight="bold">
+            {item.rating}
+          </Text>
+        </View>
+        <View style={styles.detailsContainer}>
+          <Text fontSize="subheading" fontWeight="bold">
+            {item.repository.fullName}
+          </Text>
+          <Text
+            color="textSecondary"
+            style={{ marginTop: 5, marginBottom: 10 }}
+          >
+            {format(Date.parse(item.createdAt), "dd.MM.yyyy")}
+          </Text>
+          <Text>{item.text}</Text>
+        </View>
       </View>
-      <View style={styles.detailsContainer}>
-        <Text fontSize="subheading" fontWeight="bold">
-          {item.repository.fullName}
-        </Text>
-        <Text color="textSecondary" style={{ marginTop: 5, marginBottom: 10 }}>
-          {format(Date.parse(item.createdAt), "dd.MM.yyyy")}
-        </Text>
-        <Text>{item.text}</Text>
+      <View style={styles.buttonsContainer}>
+        <Pressable onPress={() => {}} style={styles.regularButton}>
+          <Text color="white" fontWeight="bold" style={{ textAlign: "center" }}>
+            View a repository
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={deleteAlert}
+          style={[
+            styles.regularButton,
+            { backgroundColor: theme.colors.error },
+          ]}
+        >
+          <Text color="white" fontWeight="bold" style={{ textAlign: "center" }}>
+            Delete review
+          </Text>
+        </Pressable>
       </View>
     </View>
   );

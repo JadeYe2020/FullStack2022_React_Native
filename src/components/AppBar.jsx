@@ -42,7 +42,7 @@ const AppBar = () => {
   const [user, setUser] = useState(null);
   const authStorage = useAuthStorage();
   const apolloClient = useApolloClient();
-  const { data, loading, ...result } = useQuery(CURRENT_USER);
+  const { data } = useQuery(CURRENT_USER);
 
   useEffect(() => {
     let me = null;
