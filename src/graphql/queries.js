@@ -52,10 +52,30 @@ export const GET_SINGLE_REPO = gql`
 `;
 
 export const CURRENT_USER = gql`
-  query {
+  query getCurrentUser($includeReviews: Boolean = false) {
     me {
       id
       username
+      reviews @include(if: $includeReviews) {
+        edges {
+          node {
+            id
+            repository {
+              id
+              fullName
+            }
+            rating
+            createdAt
+            text
+          }
+          cursor
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+        }
+      }
     }
   }
 `;

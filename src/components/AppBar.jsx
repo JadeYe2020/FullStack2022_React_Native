@@ -42,20 +42,19 @@ const AppBar = () => {
   const [user, setUser] = useState(null);
   const authStorage = useAuthStorage();
   const apolloClient = useApolloClient();
-  const result = useQuery(CURRENT_USER);
+  const { data, loading, ...result } = useQuery(CURRENT_USER);
 
   useEffect(() => {
     let me = null;
-    if (result.data) {
-      me = result.data.me;
+    if (data) {
+      me = data.me;
       setUser(me);
     }
-  }, [result]);
+  }, [data]);
 
   const navigate = useNavigate();
 
   const onSignOut = async () => {
-    // console.log("sign out");
     await authStorage.removeAccessToken();
     apolloClient.resetStore();
     navigate("/signin", { replace: true });
@@ -78,6 +77,7 @@ const AppBar = () => {
       <ScrollView horizontal>
         <Tab title="Repositories" linkPath="/" />
         <Tab title="Create a review" linkPath="/review" />
+        <Tab title="My reviews" linkPath="/myreviews" />
         <Pressable style={styles.flexItem} onPress={onSignOut}>
           <Text
             fontWeight="bold"
