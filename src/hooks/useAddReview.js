@@ -15,10 +15,6 @@ const useAddReview = () => {
       },
     });
 
-    // if (response.errors) {
-    //   return response.errors;
-    // }
-
     return response.data;
   };
 

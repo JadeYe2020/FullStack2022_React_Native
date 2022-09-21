@@ -1,8 +1,10 @@
 import { View, FlatList, StyleSheet, Pressable, Alert } from "react-native";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-native";
 import Text from "./Text";
 import theme from "../theme";
 import useUserReviews from "../hooks/useUserReviews";
+import useDeleteReview from "../hooks/useDeleteReview";
 
 const styles = StyleSheet.create({
   separator: {
@@ -55,12 +57,31 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const ReviewItem = ({ item }) => {
+const ReviewItem = ({ item, refetch }) => {
+  const navigate = useNavigate();
+  const [removeReview] = useDeleteReview();
+
   if (!item) {
     return <Text>loading</Text>;
   }
 
+  const viewRepo = () => {
+    const id = item.repository.id;
+    navigate(`/repositories/${id}`);
+  };
+
   const deleteAlert = () => {
+    const deleteReview = async () => {
+      try {
+        const hasDeleted = await removeReview(item.id);
+        if (hasDeleted) {
+          refetch({ includeReviews: true });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
     Alert.alert(
       "Delete review",
       "Are you sure you want to delete this review?",
@@ -70,7 +91,7 @@ const ReviewItem = ({ item }) => {
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel",
         },
-        { text: "Delete", onPress: () => console.log("OK Pressed") },
+        { text: "Delete", onPress: () => deleteReview() },
       ]
     );
   };
@@ -97,9 +118,9 @@ const ReviewItem = ({ item }) => {
         </View>
       </View>
       <View style={styles.buttonsContainer}>
-        <Pressable onPress={() => {}} style={styles.regularButton}>
+        <Pressable onPress={viewRepo} style={styles.regularButton}>
           <Text color="white" fontWeight="bold" style={{ textAlign: "center" }}>
-            View a repository
+            View repository
           </Text>
         </Pressable>
         <Pressable
@@ -118,7 +139,7 @@ const ReviewItem = ({ item }) => {
   );
 };
 
-const MyReviewsContainer = ({ reviews }) => {
+const MyReviewsContainer = ({ reviews, refetch }) => {
   const reviewNodes = reviews ? reviews.edges.map((edge) => edge.node) : [];
 
   return (
@@ -126,14 +147,14 @@ const MyReviewsContainer = ({ reviews }) => {
       <FlatList
         data={reviewNodes}
         ItemSeparatorComponent={ItemSeparator}
-        renderItem={({ item }) => <ReviewItem item={item} />}
+        renderItem={({ item }) => <ReviewItem item={item} refetch={refetch} />}
       />
     </View>
   );
 };
 
 const MyReviews = () => {
-  const { reviews } = useUserReviews({
+  const { reviews, refetch } = useUserReviews({
     includeReviews: true,
   });
 
@@ -141,7 +162,7 @@ const MyReviews = () => {
     return <Text>loading</Text>;
   }
 
-  return <MyReviewsContainer reviews={reviews} />;
+  return <MyReviewsContainer reviews={reviews} refetch={refetch} />;
 };
 
 export default MyReviews;
